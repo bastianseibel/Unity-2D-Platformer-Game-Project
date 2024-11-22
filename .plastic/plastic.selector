@@ -1,0 +1,3 @@
+repository "Game Project/Game Project@9072146305778@cloud"
+  path "/"
+    smartbranch "/main/2-Basic Hero Movement" 
