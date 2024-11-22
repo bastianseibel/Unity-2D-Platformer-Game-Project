@@ -21,10 +21,13 @@ public class HeroMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    private CoinManager coinManager;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        coinManager = FindObjectOfType<CoinManager>();
     }
 
     void Update()
@@ -67,7 +70,7 @@ public class HeroMovement : MonoBehaviour
 
     private void CheckGroundedStatus()
     {
-        // Perform a raycast to check if the character is grounded
+        //  Creates a Raycast to check if the character is grounded
         isGrounded = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
 
 
@@ -94,5 +97,14 @@ public class HeroMovement : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + Vector3.down * groundCheckDistance);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Coin"))
+        {
+            coinManager.addCoin();
+            Destroy(collision.gameObject);
+        }
     }
 }
