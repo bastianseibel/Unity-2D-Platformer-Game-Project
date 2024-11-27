@@ -42,6 +42,7 @@ public class HeroMovement : MonoBehaviour
 
     private void HandleMovement()
     {
+        
         float direction = Input.GetAxis("Horizontal");
 
         anim.SetBool("IsWalking", direction != 0);
@@ -69,21 +70,33 @@ public class HeroMovement : MonoBehaviour
     }
 
     private void CheckGroundedStatus()
+{
+    float verticalVelocity = rb.velocity.y;
+
+    isGrounded = Physics2D.CircleCast(groundCheck.position, 0.1f, Vector2.down, groundCheckDistance, groundLayer);
+
+    if (isGrounded)
     {
-        //  Creates a Raycast to check if the character is grounded
-        isGrounded = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayer);
-
-
-        if (isGrounded)
+        jumpCount = 0;
+        anim.SetBool("IsJumping", false);
+        anim.SetBool("IsFalling", false);
+    }
+    else
+    {
+        if (verticalVelocity< -0.1f)
         {
-            jumpCount = 0;
+            anim.SetBool("IsFalling", true);
             anim.SetBool("IsJumping", false);
+            anim.SetBool("IsWalking", false);
         }
-        else
+        else if (verticalVelocity > 0.1f)
         {
             anim.SetBool("IsJumping", true);
+            anim.SetBool("IsFalling", false);
+            anim.SetBool("IsWalking", false);
         }
     }
+}
 
     private void Flip()
     {

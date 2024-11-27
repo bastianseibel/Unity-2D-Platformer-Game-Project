@@ -8,6 +8,7 @@ public class Mushroom : MonoBehaviour
     public float moveDistance = 3f;
     private Vector3 startPosition;
     private bool movingRight = true;
+    public int health = 50;
 
     void Start()
     {
@@ -58,5 +59,19 @@ public class Mushroom : MonoBehaviour
                 heroHealth.TakeDamage(1);
             }
         }
+    }
+    
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Destroy(gameObject);
     }
 }
