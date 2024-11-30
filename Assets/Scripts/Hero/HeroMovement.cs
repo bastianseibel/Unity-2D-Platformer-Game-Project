@@ -22,12 +22,14 @@ public class HeroMovement : MonoBehaviour
     private Animator anim;
 
     private CoinManager coinManager;
+    private Camera mainCamera;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         coinManager = FindObjectOfType<CoinManager>();
+        mainCamera = Camera.main;
     }
 
     void Update()
@@ -38,6 +40,8 @@ public class HeroMovement : MonoBehaviour
         HandleJump();
 
         CheckGroundedStatus();
+
+        UpdateCamera();
     }
 
     private void HandleMovement()
@@ -120,4 +124,14 @@ public class HeroMovement : MonoBehaviour
             Destroy(collision.gameObject);
         }
     }
+    private void UpdateCamera()
+    {
+        if (mainCamera != null)
+        {
+            Vector3 newPosition = transform.position;
+            newPosition.z = mainCamera.transform.position.z; // Behalte die ursprüngliche Z-Position der Kamera
+            mainCamera.transform.position = newPosition;
+        }
+    }
+
 }
