@@ -116,20 +116,21 @@ public class HeroMovement : MonoBehaviour
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + Vector3.down * groundCheckDistance);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Coin"))
+        if (collision.CompareTag("Coin"))
         {
             coinManager.addCoin();
             Destroy(collision.gameObject);
         }
     }
+    
     private void UpdateCamera()
     {
         if (mainCamera != null)
         {
             Vector3 newPosition = transform.position;
-            newPosition.z = mainCamera.transform.position.z; // Behalte die ursprüngliche Z-Position der Kamera
+            newPosition.z = mainCamera.transform.position.z;
             mainCamera.transform.position = newPosition;
         }
     }
