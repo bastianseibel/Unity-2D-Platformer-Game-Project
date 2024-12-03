@@ -1,17 +1,20 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class TutorialSign : MonoBehaviour
 {
-    public string tutorialMessage;
-    public GameObject tutorialUI;
-
+    [SerializeField] private string tutorialMessage;
+    [SerializeField] private GameObject tutorialUI;
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            tutorialUI.GetComponent<Text>().text = tutorialMessage;
-            tutorialUI.SetActive(true);
+            if (tutorialUI.TryGetComponent<TextMeshProUGUI>(out var tmpText))
+            {
+                tmpText.text = tutorialMessage;
+                tutorialUI.SetActive(true);
+            }
         }
     }
 
