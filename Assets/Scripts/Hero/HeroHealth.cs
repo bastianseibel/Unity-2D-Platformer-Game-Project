@@ -10,6 +10,7 @@ public class HeroHealth : MonoBehaviour
     [Header("References")]
     private SpriteRenderer spriteRenderer;
     private HeroMovement heroMovement;
+    private Animator animator;
 
     public int currentHealth;
     private HeartManager heartManager;
@@ -21,45 +22,40 @@ public class HeroHealth : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         heroMovement = GetComponent<HeroMovement>();
         heartManager = FindObjectOfType<HeartManager>();
+        animator = GetComponent<Animator>();
     }
 
     public void TakeDamage(int damage)
+{
+    if (!isImmune)
     {
-        if (!isImmune)
+        currentHealth -= damage;
+
+        if (heartManager != null)
         {
-            currentHealth -= damage;
+            heartManager.UpdateHearts();
+        }
 
-            if (heartManager != null)
-            {
-                heartManager.UpdateHearts();
-            }
-
-            if (currentHealth <= 0)
-            {
-                Die();
-            }
-            else
-            {
-                StartCoroutine(ImmunityEffect());
-            }
+        if (currentHealth == 1)
+        {
+            animator.SetTrigger("Damage");
+        }
+        else if (currentHealth <= 0)
+        {
+            animator.SetTrigger("Die");
+            Die();
+        }
+        else
+        {
+            StartCoroutine(ImmunityEffect());
         }
     }
+}
 
     private IEnumerator ImmunityEffect()
     {
         isImmune = true;
-        
-        // Blinc Effect during immunity
-        float endTime = Time.time + immunityDuration;
-        while (Time.time < endTime)
-        {
-            spriteRenderer.color = new Color(1, 1, 1, 0.5f);
-            yield return new WaitForSeconds(0.1f);
-            spriteRenderer.color = new Color(1, 1, 1, 1f);
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        spriteRenderer.color = new Color(1, 1, 1, 1f);
+        yield return new WaitForSeconds(immunityDuration);
         isImmune = false;
     }
 
