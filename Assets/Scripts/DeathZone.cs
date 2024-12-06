@@ -9,7 +9,7 @@ public class DeathZone : MonoBehaviour
             HeroHealth heroHealth = collision.GetComponent<HeroHealth>();
             if (heroHealth != null)
             {
-                heroHealth.TakeDamage(heroHealth.currentHealth);
+                heroHealth.Die();
             }
         }
     }
