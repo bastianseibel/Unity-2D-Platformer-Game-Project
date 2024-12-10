@@ -120,8 +120,17 @@ public class HeroMovement : MonoBehaviour
     {
         if (collision.CompareTag("Coin"))
         {
-            coinManager.addCoin();
-            Destroy(collision.gameObject);
+            // * Get coin Script
+            Coin coin = collision.GetComponent<Coin>();
+            if (coin != null)
+            {
+                coinManager.addCoin(coin);
+                Destroy(collision.gameObject);          
+             }
+             else
+            {
+                Debug.LogError("Coin component not found on the collided object.");
+            }
         }
     }
     

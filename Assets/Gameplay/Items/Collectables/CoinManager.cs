@@ -8,9 +8,9 @@ public class CoinManager : MonoBehaviour
     public int coinCount = 0;
     public TMP_Text coinText;
 
-    public void addCoin()
+    public void addCoin(Coin coin)
     {
-        coinCount++;
+        coinCount += coin.value;
         UpdateCoinText();
     }
 
@@ -21,6 +21,6 @@ public class CoinManager : MonoBehaviour
 
     private void UpdateCoinText()
     {
-        coinText.text = $"x {coinCount:00}";
+        coinText.text = $"x {coinCount:00000}";
     }
 }
