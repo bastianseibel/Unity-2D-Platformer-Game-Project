@@ -1697,7 +1697,7 @@ Transform:
   m_GameObject: {fileID: 256870133}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.78, y: -1.96, z: 0}
+  m_LocalPosition: {x: -4.673, y: -2.089, z: 0}
   m_LocalScale: {x: 1.8, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1861,7 +1861,7 @@ MonoBehaviour:
   groundCheck: {fileID: 1237433593}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 192
   groundCheckDistance: 0.5
 --- !u!4 &286217238 stripped
 Transform:

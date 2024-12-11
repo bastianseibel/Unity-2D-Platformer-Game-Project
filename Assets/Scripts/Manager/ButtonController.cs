@@ -4,16 +4,21 @@ using UnityEngine.EventSystems;
 public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private HeroMovement heroMovement;
-    public string buttonType;
     private Rigidbody2D playerRb;
     private HeroAttack heroAttack;
+    private LadderMovement ladderMovement;
+    public string buttonType;
 
     void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        heroMovement = player.GetComponent<HeroMovement>();
-        playerRb = player.GetComponent<Rigidbody2D>();
-        heroAttack = player.GetComponent<HeroAttack>();
+        if (player != null)
+        {
+            heroMovement = player.GetComponent<HeroMovement>();
+            playerRb = player.GetComponent<Rigidbody2D>();
+            heroAttack = player.GetComponent<HeroAttack>();
+        }
+        ladderMovement = FindObjectOfType<LadderMovement>();
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -27,12 +32,12 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
                 heroMovement.Move(1);
                 break;
             case "up":
-                if(heroMovement.isOnLadder)
-                    playerRb.velocity = new Vector2(playerRb.velocity.x, heroMovement.speed);
+                if (ladderMovement != null)
+                    ladderMovement.OnUpButtonDown();;
                 break;
             case "down":
-                if(heroMovement.isOnLadder)
-                    playerRb.velocity = new Vector2(playerRb.velocity.x, -heroMovement.speed);
+                if (ladderMovement != null)
+                    ladderMovement.OnDownButtonDown();
                 break;
             case "jump":
                 heroMovement.Jump();
@@ -55,9 +60,12 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
                 heroMovement.Move(0);
                 break;
             case "up":
+                if (ladderMovement != null)
+                    ladderMovement.OnUpButtonUp();
+                break;
             case "down":
-                if(heroMovement.isOnLadder)
-                    playerRb.velocity = new Vector2(playerRb.velocity.x, 0);
+                if (ladderMovement != null)
+                    ladderMovement.OnDownButtonUp();
                 break;
         }
     }
