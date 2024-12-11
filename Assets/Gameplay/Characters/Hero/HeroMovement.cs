@@ -12,11 +12,16 @@ public class HeroMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    [Header("Ground Check")]
+    public Transform groundCheck;    // Referenz zum Ground Check Point
+    public LayerMask groundLayer;    // Layer für Ground
+    public float groundCheckDistance = 0.5f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        
+
         anim.SetBool("IsWalking", false);
         anim.SetBool("IsJumping", false);
         anim.SetBool("IsFalling", false);
@@ -39,8 +44,9 @@ public class HeroMovement : MonoBehaviour
         {
             Flip();
         }
-
-        rb.velocity = new Vector2(direction * speed, rb.velocity.y);
+        
+        float moveSpeed = direction * speed;
+        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
     }
 
     public void Jump()
@@ -50,6 +56,8 @@ public class HeroMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             jumpCount++;
+            anim.SetBool("IsJumping", true);
+            anim.SetBool("IsFalling", false);
         }
     }
 
@@ -69,7 +77,7 @@ public class HeroMovement : MonoBehaviour
     private void CheckGroundedStatus()
     {
         float verticalVelocity = rb.velocity.y;
-        bool isGrounded = Physics2D.CircleCast(transform.position, 0.1f, Vector2.down, 0.5f, LayerMask.GetMask("Ground"));
+        bool isGrounded = Physics2D.CircleCast(groundCheck.position, 0.1f, Vector2.down, groundCheckDistance, groundLayer);
 
         if (isGrounded)
         {
@@ -91,6 +99,15 @@ public class HeroMovement : MonoBehaviour
                 anim.SetBool("IsFalling", false);
                 anim.SetBool("IsWalking", false);
             }
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(groundCheck.position, groundCheck.position + Vector3.down * groundCheckDistance);
         }
     }
 }
