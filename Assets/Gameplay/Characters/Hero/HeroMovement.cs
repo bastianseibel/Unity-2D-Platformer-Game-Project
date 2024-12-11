@@ -1,55 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class HeroMovement : MonoBehaviour
 {
-    
     public float speed = 5.0F;
     public float jumpForce = 5.0F;
     public int maxJumps = 2;
     private int jumpCount = 0;
-    
-    
-    public Transform groundCheck;
-    public LayerMask groundLayer;
-    public float groundCheckDistance = 0.5f;
-
-    private bool isGrounded;
     private bool facingRight = true;
+    public bool isOnLadder = false;
     
     private Rigidbody2D rb;
     private Animator anim;
-
-    public bool isOnLadder = false;
-    private CoinManager coinManager;
-    private Camera mainCamera;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        coinManager = FindObjectOfType<CoinManager>();
-        mainCamera = Camera.main;
+        
+        anim.SetBool("IsWalking", false);
+        anim.SetBool("IsJumping", false);
+        anim.SetBool("IsFalling", false);
     }
 
     void Update()
     {
-        
-        HandleMovement();
-        
-        HandleJump();
-
         CheckGroundedStatus();
-
-        UpdateCamera();
     }
 
-    private void HandleMovement()
+    public void Move(float direction)
     {
-        
-        float direction = Input.GetAxis("Horizontal");
-
         anim.SetBool("IsWalking", direction != 0);
 
         if (direction > 0 && !facingRight)
@@ -64,44 +43,15 @@ public class HeroMovement : MonoBehaviour
         rb.velocity = new Vector2(direction * speed, rb.velocity.y);
     }
 
-    private void HandleJump()
+    public void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumps)
+        if (jumpCount < maxJumps)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             jumpCount++;
         }
     }
-
-    private void CheckGroundedStatus()
-{
-    float verticalVelocity = rb.velocity.y;
-
-    isGrounded = Physics2D.CircleCast(groundCheck.position, 0.1f, Vector2.down, groundCheckDistance, groundLayer);
-
-    if (isGrounded)
-    {
-        jumpCount = 0;
-        anim.SetBool("IsJumping", false);
-        anim.SetBool("IsFalling", false);
-    }
-    else
-    {
-        if (verticalVelocity< -0.1f)
-        {
-            anim.SetBool("IsFalling", true);
-            anim.SetBool("IsJumping", false);
-            anim.SetBool("IsWalking", false);
-        }
-        else if (verticalVelocity > 0.1f)
-        {
-            anim.SetBool("IsJumping", true);
-            anim.SetBool("IsFalling", false);
-            anim.SetBool("IsWalking", false);
-        }
-    }
-}
 
     private void Flip()
     {
@@ -111,38 +61,36 @@ public class HeroMovement : MonoBehaviour
         transform.localScale = theScale;
     }
 
-    void OnDrawGizmos()
+    public void ResetJumpCount()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(groundCheck.position, groundCheck.position + Vector3.down * groundCheckDistance);
+        jumpCount = 0;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void CheckGroundedStatus()
     {
-        if (collision.CompareTag("Coin"))
+        float verticalVelocity = rb.velocity.y;
+        bool isGrounded = Physics2D.CircleCast(transform.position, 0.1f, Vector2.down, 0.5f, LayerMask.GetMask("Ground"));
+
+        if (isGrounded)
         {
-            // * Get coin Script
-            Coin coin = collision.GetComponent<Coin>();
-            if (coin != null)
+            ResetJumpCount();
+            anim.SetBool("IsJumping", false);
+            anim.SetBool("IsFalling", false);
+        }
+        else
+        {
+            if (verticalVelocity < -0.1f)
             {
-                coinManager.addCoin(coin);
-                Destroy(collision.gameObject);          
-             }
-             else
+                anim.SetBool("IsFalling", true);
+                anim.SetBool("IsJumping", false);
+                anim.SetBool("IsWalking", false);
+            }
+            else if (verticalVelocity > 0.1f)
             {
-                Debug.LogError("Coin component not found on the collided object.");
+                anim.SetBool("IsJumping", true);
+                anim.SetBool("IsFalling", false);
+                anim.SetBool("IsWalking", false);
             }
         }
     }
-    
-    private void UpdateCamera()
-    {
-        if (mainCamera != null)
-        {
-            Vector3 newPosition = transform.position;
-            newPosition.z = mainCamera.transform.position.z;
-            mainCamera.transform.position = newPosition;
-        }
-    }
-
 }
