@@ -1612,7 +1612,6 @@ GameObject:
   - component: {fileID: 256870142}
   - component: {fileID: 256870145}
   - component: {fileID: 256870144}
-  - component: {fileID: 256870146}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1636,6 +1635,11 @@ MonoBehaviour:
   jumpForce: 4.4
   maxJumps: 1
   isOnLadder: 0
+  groundCheck: {fileID: 1237433593}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 192
+  groundCheckDistance: 0.5
 --- !u!212 &256870135
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1846,23 +1850,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92944a45609aa9545804769020cd5526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &256870146
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 256870133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe41c4ca5ce8b824cab3eae45e6a3d28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  groundCheck: {fileID: 1237433593}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 192
-  groundCheckDistance: 0.5
 --- !u!4 &286217238 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8879979384462654592, guid: e3b67da0330018043bed0b69b150902a, type: 3}
@@ -13118,7 +13105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1237433593}
   m_Layer: 3
-  m_Name: IsGrounded
+  m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
