@@ -18,6 +18,7 @@ public class LadderMovement : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             heroMovement.isOnLadder = true;
+            playerRb.gravityScale = 0;
         }
     }
 
@@ -26,6 +27,7 @@ public class LadderMovement : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             heroMovement.isOnLadder = false;
+            playerRb.gravityScale = 1;
             isMovingUp = false;
             isMovingDown = false;
         }
