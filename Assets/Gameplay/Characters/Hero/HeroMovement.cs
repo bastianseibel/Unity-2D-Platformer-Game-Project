@@ -21,6 +21,7 @@ public class HeroMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    public bool isOnLadder = false;
     private CoinManager coinManager;
     private Camera mainCamera;
 
