@@ -16,12 +16,10 @@ public class HeroAttack : MonoBehaviour
         anim = GetComponent<Animator>();
         anim.ResetTrigger("HeroAttack");
     }
-    void Update()
+
+    public void OnAttackButtonPressed()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Attack();
-        }
+        Attack();
     }
 
     void Attack()
