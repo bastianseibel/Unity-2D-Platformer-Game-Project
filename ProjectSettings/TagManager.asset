@@ -8,6 +8,7 @@ TagManager:
   - Coin
   - CoinText
   - Checkpoint
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -42,6 +43,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Backgroundtype
+    uniqueID: 2296541921
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
