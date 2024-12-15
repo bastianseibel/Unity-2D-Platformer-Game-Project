@@ -785,7 +785,7 @@ Transform:
   m_GameObject: {fileID: 256870133}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.92, y: 11.03, z: 0}
+  m_LocalPosition: {x: -6.44, y: -2.1, z: 0}
   m_LocalScale: {x: 1.8, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -855,9 +855,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 2
   immunityDuration: 1.5
-  currentHealth: 2
-  isImmune: 0
   deathDuration: 1.5
+  currentHealth: 2
 --- !u!114 &256870142
 MonoBehaviour:
   m_ObjectHideFlags: 0
