@@ -43,6 +43,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Parallex
+    uniqueID: 1140371875
+    locked: 0
   - name: Backgroundtype
     uniqueID: 2296541921
     locked: 0

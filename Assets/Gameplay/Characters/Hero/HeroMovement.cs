@@ -10,9 +10,10 @@ public class HeroMovement : MonoBehaviour
     // * Character variables
     private int jumpCount = 0;
     private bool facingRight = true;
-    public bool isOnLadder = false;
-    private float moveDirection = 0f;
-    
+    public bool isOnLadder = false; // Erlaubt klettern
+    private float moveDirectionX = 0f;
+    private float moveDirectionY = 0f;
+
     private Rigidbody2D rb;
     private Animator anim;
 
@@ -20,7 +21,6 @@ public class HeroMovement : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckDistance = 0.5f;
-
 
     // * Start the game and set the animations to the default state
     void Start()
@@ -36,20 +36,48 @@ public class HeroMovement : MonoBehaviour
     // * Fixed Update is called once per physics frame, move the hero
     void FixedUpdate()
     {
-        float moveSpeed = moveDirection * speed;
-        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        float moveSpeedX = moveDirectionX * speed;
+        float moveSpeedY = moveDirectionY * speed;
+
+        // Bewegung auf der X- und Y-Achse
+        rb.velocity = new Vector2(moveSpeedX, isOnLadder ? moveSpeedY : rb.velocity.y);
     }
 
-    // * Checks all the time if the hero is grounded
+    // * Checks all the time if the hero is grounded and processes input
     void Update()
     {
         CheckGroundedStatus();
+        HandleInput(); // Eingaben für Bewegung
+    }
+
+    // * Handle keyboard input for movement, jumping and vertical movement
+    private void HandleInput()
+    {
+        // Bewegung links und rechts
+        float horizontalInput = Input.GetAxis("Horizontal"); // Pfeiltasten oder A/D
+        Move(horizontalInput);
+
+        // Hoch und runter mit den Pfeiltasten
+        if (isOnLadder) // Nur klettern, wenn auf einer Leiter
+        {
+            moveDirectionY = Input.GetAxis("Vertical"); // Pfeiltasten oben/unten
+        }
+        else
+        {
+            moveDirectionY = 0f; // Verhindert unbeabsichtigtes Klettern
+        }
+
+        // Springen mit der "Jump"-Taste (Space oder festgelegte Taste)
+        if (Input.GetButtonDown("Jump"))
+        {
+            Jump();
+        }
     }
 
     // * Handle movement and flip the hero sprite
     public void Move(float direction)
     {
-        moveDirection = direction;
+        moveDirectionX = direction;
         anim.SetBool("IsWalking", direction != 0);
 
         if (direction > 0 && !facingRight)
@@ -90,7 +118,7 @@ public class HeroMovement : MonoBehaviour
         jumpCount = 0;
     }
 
-    // * Check if the hero is grounded and update the aniamtions if so
+    // * Check if the hero is grounded and update the animations
     private void CheckGroundedStatus()
     {
         float verticalVelocity = rb.velocity.y;
