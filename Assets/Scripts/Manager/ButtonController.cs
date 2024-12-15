@@ -3,12 +3,16 @@ using UnityEngine.EventSystems;
 
 public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    // * References to other Player Components
     private HeroMovement heroMovement;
     private Rigidbody2D playerRb;
     private HeroAttack heroAttack;
     private LadderMovement ladderMovement;
+
+    // * Type of the button
     public string buttonType;
 
+    // * Get all necessary components from the player
     void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -21,6 +25,7 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         ladderMovement = FindObjectOfType<LadderMovement>();
     }
 
+    // * Handle the button press events
     public void OnPointerDown(PointerEventData eventData)
     {
         switch(buttonType.ToLower())
@@ -51,6 +56,7 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         }
     }
 
+    // * Handle the button release events
     public void OnPointerUp(PointerEventData eventData)
     {
         switch(buttonType.ToLower())

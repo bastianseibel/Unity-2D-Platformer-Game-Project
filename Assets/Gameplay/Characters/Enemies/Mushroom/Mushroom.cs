@@ -1,25 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Mushroom : MonoBehaviour
 {
+    // * Enemy movement and health settings
     public float moveSpeed = 2f;
     public float moveDistance = 3f;
-    private Vector3 startPosition;
-    private bool movingRight = true;
     public int health = 50;
 
+    // * Track movement state
+    private Vector3 startPosition;
+    private bool movingRight = true;
+
+    // * Store initial position
     void Start()
     {
         startPosition = transform.position;
     }
 
+    // * Update movement every frame
     void Update()
     {
         Move();
     }
 
+    // * Handle back and forth movement
     void Move()
     {
         if (movingRight)
@@ -42,6 +46,7 @@ public class Mushroom : MonoBehaviour
         }
     }
 
+    // * Flip enemy sprite direction
     private void Flip()
     {
         Vector3 theScale = transform.localScale;
@@ -49,6 +54,7 @@ public class Mushroom : MonoBehaviour
         transform.localScale = theScale;
     }
 
+    // * Damage player on contact
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -61,6 +67,7 @@ public class Mushroom : MonoBehaviour
         }
     }
     
+    // * Handle enemy taking damage
     public void TakeDamage(int damage)
     {
         health -= damage;
@@ -70,6 +77,7 @@ public class Mushroom : MonoBehaviour
         }
     }
 
+    // * Destroy enemy when health reaches zero
     private void Die()
     {
         Destroy(gameObject);

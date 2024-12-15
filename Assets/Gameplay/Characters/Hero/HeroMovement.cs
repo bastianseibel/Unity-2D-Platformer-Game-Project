@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class HeroMovement : MonoBehaviour
 {
+    // * Movement and jump settings
     public float speed = 5.0F;
     public float jumpForce = 5.0F;
     public int maxJumps = 2;
+
+    // * Character variables
     private int jumpCount = 0;
     private bool facingRight = true;
     public bool isOnLadder = false;
@@ -13,10 +16,13 @@ public class HeroMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    // * Ground Check settings
     public Transform groundCheck;
     public LayerMask groundLayer;
     public float groundCheckDistance = 0.5f;
 
+
+    // * Start the game and set the animations to the default state
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -27,17 +33,20 @@ public class HeroMovement : MonoBehaviour
         anim.SetBool("IsFalling", false);
     }
 
+    // * Fixed Update is called once per physics frame, move the hero
     void FixedUpdate()
     {
         float moveSpeed = moveDirection * speed;
         rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
     }
 
+    // * Checks all the time if the hero is grounded
     void Update()
     {
         CheckGroundedStatus();
     }
 
+    // * Handle movement and flip the hero sprite
     public void Move(float direction)
     {
         moveDirection = direction;
@@ -53,6 +62,7 @@ public class HeroMovement : MonoBehaviour
         }
     }
 
+    // * Handle jumping
     public void Jump()
     {
         if (jumpCount < maxJumps)
@@ -65,6 +75,7 @@ public class HeroMovement : MonoBehaviour
         }
     }
 
+    // * Flip the hero sprite
     private void Flip()
     {
         facingRight = !facingRight;
@@ -73,11 +84,13 @@ public class HeroMovement : MonoBehaviour
         transform.localScale = theScale;
     }
 
+    // * Reset the jump count
     public void ResetJumpCount()
     {
         jumpCount = 0;
     }
 
+    // * Check if the hero is grounded and update the aniamtions if so
     private void CheckGroundedStatus()
     {
         float verticalVelocity = rb.velocity.y;
