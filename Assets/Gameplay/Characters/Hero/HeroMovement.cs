@@ -8,13 +8,13 @@ public class HeroMovement : MonoBehaviour
     private int jumpCount = 0;
     private bool facingRight = true;
     public bool isOnLadder = false;
+    private float moveDirection = 0f;
     
     private Rigidbody2D rb;
     private Animator anim;
 
-    [Header("Ground Check")]
-    public Transform groundCheck;    // Referenz zum Ground Check Point
-    public LayerMask groundLayer;    // Layer für Ground
+    public Transform groundCheck;
+    public LayerMask groundLayer;
     public float groundCheckDistance = 0.5f;
 
     void Start()
@@ -27,6 +27,12 @@ public class HeroMovement : MonoBehaviour
         anim.SetBool("IsFalling", false);
     }
 
+    void FixedUpdate()
+    {
+        float moveSpeed = moveDirection * speed;
+        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+    }
+
     void Update()
     {
         CheckGroundedStatus();
@@ -34,6 +40,7 @@ public class HeroMovement : MonoBehaviour
 
     public void Move(float direction)
     {
+        moveDirection = direction;
         anim.SetBool("IsWalking", direction != 0);
 
         if (direction > 0 && !facingRight)
@@ -44,9 +51,6 @@ public class HeroMovement : MonoBehaviour
         {
             Flip();
         }
-        
-        float moveSpeed = direction * speed;
-        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
     }
 
     public void Jump()
@@ -102,6 +106,7 @@ public class HeroMovement : MonoBehaviour
         }
     }
 
+    // * Ground Check line draw in editor
     void OnDrawGizmos()
     {
         if (groundCheck != null)
