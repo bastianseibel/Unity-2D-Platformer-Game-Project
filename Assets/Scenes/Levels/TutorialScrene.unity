@@ -1298,10 +1298,9 @@ PrefabInstance:
       objectReference: {fileID: 230902440}
     - target: {fileID: 3843934599813212047, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: tutorialMessage
-      value: Falls du schaden genommen hast, sammle den Apfel ein um ein Leben zu
-        bekommen. Wenn du bereits volle Herzen hast, sammle den Apfel nicht ein und
-        warte bist du welchen erhalten hast, da er auch mit vollen Herzen eingesammelt
-        werden kann!
+      value: Sammle den Apfel ein um ein Leben zu bekommen. Wenn du bereits volle
+        Herzen hast, lohnt es sich nicht ihn einzusammeln und warte bist du welchen
+        erhalten hast.
       objectReference: {fileID: 0}
     - target: {fileID: 8879979384462654592, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1701,7 +1700,7 @@ Transform:
   m_GameObject: {fileID: 256870133}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.673, y: -2.089, z: 0}
+  m_LocalPosition: {x: -6.57, y: -2.089, z: 0}
   m_LocalScale: {x: 1.8, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2094,9 +2093,9 @@ PrefabInstance:
       objectReference: {fileID: 230902440}
     - target: {fileID: 3843934599813212047, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: tutorialMessage
-      value: 'Springe mit ''Leertaste'', um Hindernisse zu ueberwinden und um auf
-        Plattformen zu gelangen. Druecke ein zweites mal, um einen Doppelsprung zu
-        machen. '
+      value: "Springe mit dem Button unten rechts, um Hindernisse zu \xFCberwinden
+        und um auf Plattformen zu gelangen. Druecke ein zweites mal, um einen Doppelsprung
+        zu machen. "
       objectReference: {fileID: 0}
     - target: {fileID: 8879979384462654592, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2974,7 +2973,7 @@ PrefabInstance:
       objectReference: {fileID: 230902440}
     - target: {fileID: 3843934599813212047, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: tutorialMessage
-      value: Schlage mit der 'Q'-Taste, um Gegner zu besiegen!
+      value: Schlage mit dem Button rechts oben, um Gegner zu besiegen!
       objectReference: {fileID: 0}
     - target: {fileID: 8879979384462654592, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -12135,8 +12134,8 @@ PrefabInstance:
       objectReference: {fileID: 230902440}
     - target: {fileID: 3843934599813212047, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: tutorialMessage
-      value: Bewege dich nach links mit 'A' und nach rechts mit der 'D'. Viel Spass
-        beim Spielen!
+      value: Bewege dich nach links mit dem linken Button und nach rechts mit dem
+        rechten Button.
       objectReference: {fileID: 0}
     - target: {fileID: 8879979384462654592, guid: e3b67da0330018043bed0b69b150902a, type: 3}
       propertyPath: m_LocalPosition.x
