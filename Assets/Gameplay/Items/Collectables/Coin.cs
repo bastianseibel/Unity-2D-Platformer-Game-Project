@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    // * Different coin types and their values
     public enum CoinType
     {
         Bronze,
@@ -10,14 +11,17 @@ public class Coin : MonoBehaviour
         Diamond
     }
 
+    // * Coin properties
     public CoinType coinType;
     public int value;
 
+    // * Set coin value based on type when created
     private void Awake()
     {
         value = GetCoinValue(coinType);
     }
 
+    // * Get value based on coin type
     private int GetCoinValue(CoinType type)
     {
         switch (type)
