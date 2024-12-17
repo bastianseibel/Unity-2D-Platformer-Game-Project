@@ -2,158 +2,204 @@ using UnityEngine;
 
 public class HeroMovement : MonoBehaviour
 {
-    // * Movement and jump settings
-    public float speed = 5.0F;
-    public float jumpForce = 5.0F;
+    [Header("Movement Settings")]
+    public float speed = 8f;
+    public float acceleration = 50f;
+    public float deceleration = 50f;
+    public float jumpForce = 14f;
+    public float airControl = 25f;
+    public float maxFallSpeed = 15f;
     public int maxJumps = 2;
 
-    // * Character variables
-    private int jumpCount = 0;
+    [Header("Physik")]
+    public float fallMultiplier = 2.5f;
+    public float lowJumpMultiplier = 2f;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public LayerMask groundLayer;
+    public float groundCheckRadius = 0.2f;
+
+    private int jumpCount;
     private bool facingRight = true;
-    public bool isOnLadder = false; // Erlaubt klettern
-    private float moveDirectionX = 0f;
-    private float moveDirectionY = 0f;
+    private float moveDirectionX;
+    private bool isGrounded;
+    private bool wasInAir = true;
+    public bool isOnLadder = false;
 
     private Rigidbody2D rb;
     private Animator anim;
 
-    // * Ground Check settings
-    public Transform groundCheck;
-    public LayerMask groundLayer;
-    public float groundCheckDistance = 0.5f;
-
-    // * Start the game and set the animations to the default state
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-
-        anim.SetBool("IsWalking", false);
-        anim.SetBool("IsJumping", false);
-        anim.SetBool("IsFalling", false);
+        ResetAnimations();
     }
 
-    // * Fixed Update is called once per physics frame, move the hero
-    void FixedUpdate()
-    {
-        float moveSpeedX = moveDirectionX * speed;
-        float moveSpeedY = moveDirectionY * speed;
-
-        // Bewegung auf der X- und Y-Achse
-        rb.velocity = new Vector2(moveSpeedX, isOnLadder ? moveSpeedY : rb.velocity.y);
-    }
-
-    // * Checks all the time if the hero is grounded and processes input
     void Update()
     {
         CheckGroundedStatus();
-        HandleInput(); // Eingaben für Bewegung
+        HandleInput();
     }
 
-    // * Handle keyboard input for movement, jumping and vertical movement
+   // * Handles all physics-based movement calculations at a fixed time interval
+    void FixedUpdate()
+    {
+    // * Calculate target horizontal speed based on input direction and speed setting
+    float targetSpeed = moveDirectionX * speed;
+    
+    float currentAcceleration = isGrounded ? acceleration : airControl;
+    
+    float newSpeed = Mathf.MoveTowards(
+        rb.velocity.x,
+        targetSpeed,
+        (moveDirectionX != 0 ? currentAcceleration : deceleration) * Time.fixedDeltaTime
+    );
+
+    // * Handle vertical movement with enhanced jump physics
+    float verticalVelocity = rb.velocity.y;
+    
+    // * Apply additional gravity when falling
+    if (verticalVelocity < 0)
+    {
+        // * Increase falling speed using fallMultiplier
+        verticalVelocity += Physics2D.gravity.y * fallMultiplier * Time.fixedDeltaTime;
+        // * Clamp falling speed to maxFallSpeed
+        verticalVelocity = Mathf.Max(verticalVelocity, -maxFallSpeed);
+    }
+    // * Apply lower gravity when rising and jump button released (for variable jump heights)
+    else if (verticalVelocity > 0 && !Input.GetButton("Jump"))
+    {
+        verticalVelocity += Physics2D.gravity.y * lowJumpMultiplier * Time.fixedDeltaTime;
+    }
+
+    // * Apply the calculated velocities to the Rigidbody2D
+    rb.velocity = new Vector2(newSpeed, verticalVelocity);
+
+    PreventWallSticking();
+}
+
+    // * Handles ladder climbing
     private void HandleInput()
     {
-        // Bewegung links und rechts
-        float horizontalInput = Input.GetAxis("Horizontal"); // Pfeiltasten oder A/D
-        Move(horizontalInput);
+        Move(Input.GetAxis("Horizontal"));
 
-        // Hoch und runter mit den Pfeiltasten
-        if (isOnLadder) // Nur klettern, wenn auf einer Leiter
-        {
-            moveDirectionY = Input.GetAxis("Vertical"); // Pfeiltasten oben/unten
-        }
-        else
-        {
-            moveDirectionY = 0f; // Verhindert unbeabsichtigtes Klettern
-        }
+    if (isOnLadder)
+    {
+        float verticalInput = Input.GetAxis("Vertical");
+        rb.velocity = new Vector2(rb.velocity.x, verticalInput * 5);
+        rb.gravityScale = 0;
+    }
+    else
+    {
+        rb.gravityScale = 1;
+    }
 
-        // Springen mit der "Jump"-Taste (Space oder festgelegte Taste)
-        if (Input.GetButtonDown("Jump"))
-        {
-            Jump();
+    if (Input.GetButtonDown("Jump"))
+    {
+        Jump();
         }
     }
 
-    // * Handle movement and flip the hero sprite
+    // * Processes horizontal movement and character flipping
     public void Move(float direction)
     {
         moveDirectionX = direction;
-        anim.SetBool("IsWalking", direction != 0);
-
-        if (direction > 0 && !facingRight)
+        
+        if (isGrounded)
         {
-            Flip();
+            anim.SetBool("IsWalking", Mathf.Abs(direction) > 0.1f);
         }
-        else if (direction < 0 && facingRight)
+
+        if ((direction > 0 && !facingRight) || (direction < 0 && facingRight))
         {
             Flip();
         }
     }
 
-    // * Handle jumping
+    // * Handles jump mechanics including double jump
     public void Jump()
     {
         if (jumpCount < maxJumps)
         {
-            rb.velocity = new Vector2(rb.velocity.x, 0);
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpCount++;
             anim.SetBool("IsJumping", true);
             anim.SetBool("IsFalling", false);
         }
     }
 
-    // * Flip the hero sprite
     private void Flip()
     {
         facingRight = !facingRight;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 
-    // * Reset the jump count
-    public void ResetJumpCount()
-    {
-        jumpCount = 0;
-    }
-
-    // * Check if the hero is grounded and update the animations
+    // * Checks if player is touching ground and updates status
     private void CheckGroundedStatus()
     {
-        float verticalVelocity = rb.velocity.y;
-        bool isGrounded = Physics2D.CircleCast(groundCheck.position, 0.1f, Vector2.down, groundCheckDistance, groundLayer);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
+        if (isGrounded && wasInAir)
+        {
+            wasInAir = false;
+            ResetAnimations();
+            jumpCount = 0;
+        }
+        else if (!isGrounded)
+        {
+            wasInAir = true;
+        }
+
+        UpdateAnimations();
+    }
+
+    // * Updates all animation states based on player movement
+    private void UpdateAnimations()
+    {
         if (isGrounded)
         {
-            ResetJumpCount();
+            anim.SetBool("IsWalking", Mathf.Abs(rb.velocity.x) > 0.2f);
             anim.SetBool("IsJumping", false);
             anim.SetBool("IsFalling", false);
         }
         else
         {
-            if (verticalVelocity < -0.1f)
-            {
-                anim.SetBool("IsFalling", true);
-                anim.SetBool("IsJumping", false);
-                anim.SetBool("IsWalking", false);
-            }
-            else if (verticalVelocity > 0.1f)
-            {
-                anim.SetBool("IsJumping", true);
-                anim.SetBool("IsFalling", false);
-                anim.SetBool("IsWalking", false);
-            }
+            anim.SetBool("IsWalking", false);
+            anim.SetBool("IsJumping", rb.velocity.y > 1f);
+            anim.SetBool("IsFalling", rb.velocity.y < -1f);
         }
     }
 
-    // * Ground Check line draw in editor
+    // * Resets all animation bools to default state
+    private void ResetAnimations()
+    {
+        anim.SetBool("IsWalking", false);
+        anim.SetBool("IsJumping", false);
+        anim.SetBool("IsFalling", false);
+    }
+
+    // * Prevents player from sticking to walls when moving against them
+    private void PreventWallSticking()
+    {
+        float distance = 0.1f;
+        if ((Physics2D.Raycast(transform.position, Vector2.left, distance, groundLayer) && moveDirectionX < 0) || 
+            (Physics2D.Raycast(transform.position, Vector2.right, distance, groundLayer) && moveDirectionX > 0))
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+    }
+
+    // * Draws debug visualization for ground check in Scene view
     void OnDrawGizmos()
     {
         if (groundCheck != null)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(groundCheck.position, groundCheck.position + Vector3.down * groundCheckDistance);
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
 }
