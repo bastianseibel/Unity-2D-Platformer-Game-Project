@@ -64,3 +64,6 @@ TagManager:
   - name: 'Environment '
     uniqueID: 1992006633
     locked: 0
+  - name: Enemy
+    uniqueID: 1919472281
+    locked: 0

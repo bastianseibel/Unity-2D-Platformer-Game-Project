@@ -1,34 +1,51 @@
 using UnityEngine;
 
-public class Mushroom : MonoBehaviour
+public class EnemieManager : MonoBehaviour
 {
     // * Enemy movement and health settings
     public float moveSpeed = 2f;
     public float moveDistance = 3f;
     public int health = 50;
+    public bool facingRightAtStart = true;
 
     // * Track movement state
     private Vector3 startPosition;
     private bool movingRight = true;
+    private Animator animator;
+    private bool isDying = false;
 
     // * Store initial position
     void Start()
     {
         startPosition = transform.position;
+        movingRight = facingRightAtStart;
+        animator = GetComponent<Animator>();
+
+        if (!facingRightAtStart != (transform.localScale.x > 0))
+        {
+            Flip();
+        }
     }
 
     // * Update movement every frame
     void Update()
     {
-        Move();
+        if (!isDying)
+        {
+            Move();
+        }
     }
 
     // * Handle back and forth movement
     void Move()
     {
+        Vector2 movement;
         if (movingRight)
         {
-            transform.Translate(Vector2.right * moveSpeed * Time.deltaTime);
+            // Bewegung nach rechts
+            movement = transform.right * moveSpeed * Time.deltaTime;
+            transform.position += (Vector3)movement;
+            
             if (transform.position.x >= startPosition.x + moveDistance)
             {
                 movingRight = false;
@@ -37,7 +54,9 @@ public class Mushroom : MonoBehaviour
         }
         else
         {
-            transform.Translate(Vector2.left * moveSpeed * Time.deltaTime);
+            movement = -transform.right * moveSpeed * Time.deltaTime;
+            transform.position += (Vector3)movement;
+            
             if (transform.position.x <= startPosition.x - moveDistance)
             {
                 movingRight = true;
@@ -73,13 +92,33 @@ public class Mushroom : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
-            Die();
+            EnemyDeath();
         }
     }
 
-    // * Destroy enemy when health reaches zero
-    private void Die()
+    // * Play death animation and destroy enemy
+    private void EnemyDeath()
     {
-        Destroy(gameObject);
+        if (!isDying)
+        {
+            isDying = true;
+            moveSpeed = 0;
+            
+            if (animator != null)
+            {
+                animator.SetTrigger("Death");
+                
+                if (GetComponent<Collider2D>() != null)
+                {
+                    GetComponent<Collider2D>().enabled = false;
+                }
+                
+                Destroy(gameObject, 0.4f);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 }
