@@ -36,7 +36,7 @@ public class HeroAttack : MonoBehaviour
         // Deal damage to each enemy hit
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<Mushroom>().TakeDamage(attackDamage);
+            enemy.GetComponent<EnemieManager>().TakeDamage(attackDamage);
         }
     }
 
