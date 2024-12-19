@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: Animated Tile 7
   m_EditorClassIdentifier: 
   m_AnimatedSprites:
-  - {fileID: 2098297604, guid: f5e360e936c9c3f4b82d41e8bea1733f, type: 3}
-  - {fileID: 816543733, guid: f5e360e936c9c3f4b82d41e8bea1733f, type: 3}
-  - {fileID: 546417745, guid: f5e360e936c9c3f4b82d41e8bea1733f, type: 3}
-  - {fileID: 152491317, guid: f5e360e936c9c3f4b82d41e8bea1733f, type: 3}
+  - {fileID: -113924480, guid: cf8463d327d7bc04e9da187aa22aee59, type: 3}
+  - {fileID: 46826246, guid: cf8463d327d7bc04e9da187aa22aee59, type: 3}
+  - {fileID: 979922856, guid: cf8463d327d7bc04e9da187aa22aee59, type: 3}
+  - {fileID: -484210757, guid: cf8463d327d7bc04e9da187aa22aee59, type: 3}
   m_MinSpeed: 1
   m_MaxSpeed: 1
   m_AnimationStartTime: 0
   m_AnimationStartFrame: 0
   m_TileColliderType: 0
+  m_TileAnimationFlags: 0
