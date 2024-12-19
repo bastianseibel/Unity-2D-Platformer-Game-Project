@@ -18,7 +18,7 @@ public class HeroMovement : MonoBehaviour
     [Header("Ground Check")]
     public Transform groundCheck;
     public LayerMask groundLayer;
-    public float groundCheckRadius = 0.2f;
+    public float groundCheckRadius = 0.3f;
 
     private int jumpCount;
     private bool facingRight = true;
@@ -141,20 +141,32 @@ public class HeroMovement : MonoBehaviour
     // * Checks if player is touching ground and updates status
     private void CheckGroundedStatus()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        bool centerGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        bool leftGrounded = Physics2D.OverlapCircle(
+        groundCheck.position + new Vector3(-0.2f, 0, 0), 
+        groundCheckRadius, 
+        groundLayer
+    );
+    bool rightGrounded = Physics2D.OverlapCircle(
+        groundCheck.position + new Vector3(0.2f, 0, 0), 
+        groundCheckRadius, 
+        groundLayer
+    );
+    
+    isGrounded = centerGrounded || leftGrounded || rightGrounded;
 
-        if (isGrounded && wasInAir)
-        {
-            wasInAir = false;
-            ResetAnimations();
-            jumpCount = 0;
-        }
-        else if (!isGrounded)
-        {
-            wasInAir = true;
-        }
+    if (isGrounded && wasInAir)
+    {
+        wasInAir = false;
+        ResetAnimations();
+        jumpCount = 0;
+    }
+    else if (!isGrounded)
+    {
+        wasInAir = true;
+    }
 
-        UpdateAnimations();
+    UpdateAnimations();
     }
 
     // * Updates all animation states based on player movement
@@ -195,11 +207,13 @@ public class HeroMovement : MonoBehaviour
 
     // * Draws debug visualization for ground check in Scene view
     void OnDrawGizmos()
+{
+    if (groundCheck != null)
     {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        Gizmos.DrawWireSphere(groundCheck.position + new Vector3(-0.2f, 0, 0), groundCheckRadius);
+            Gizmos.DrawWireSphere(groundCheck.position + new Vector3(0.2f, 0, 0), groundCheckRadius);
         }
     }
 }
