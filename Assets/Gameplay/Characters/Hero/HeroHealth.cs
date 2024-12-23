@@ -15,7 +15,7 @@ public class HeroHealth : MonoBehaviour
     private Animator animator;
     private HeroMovement heroMovement;
     private HeartManager heartManager;
-    private Vector3 spawnPoint;
+    public Vector3 spawnPoint;
 
     // * Current state tracking
     [Header("State")]
@@ -116,14 +116,14 @@ public class HeroHealth : MonoBehaviour
     {
         animator.Rebind();
         animator.Update(0f);
-        
+
         animator.SetBool("IsWalking", false);
         animator.SetBool("IsJumping", false);
         animator.SetBool("IsFalling", false);
         animator.ResetTrigger("Damage");
         animator.ResetTrigger("Die");
         animator.ResetTrigger("HeroAttack");
-        
+
         animator.Play("HeroIdle", 0, 0f);
     }
 

@@ -1,28 +1,52 @@
 using UnityEngine;
-using TMPro; 
+using TMPro;
 
 public class CoinManager : MonoBehaviour
 {
-    // * Coin tracking and UI
-    public int coinCount = 0;
-    public TMP_Text coinText;
+    public static CoinManager Instance { get; private set; }
+    [SerializeField] private TextMeshProUGUI coinText;
 
-    // * Initialize coin display
+    // * Singleton pattern
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    // * Start method to update coin text when the game starts
     void Start()
     {
-        UpdateCoinText();
+        if (SaveLoadManager.Instance != null)
+        {
+            UpdateCoinText();
+        }
     }
 
-    // * Add coin value and update display
+    // * Add coin to total and update UI
     public void addCoin(Coin coin)
     {
-        coinCount += coin.value;
-        UpdateCoinText();
+        if (SaveLoadManager.Instance != null)
+        {
+            SaveLoadManager.Instance.AddCoins(coin.value);
+            UpdateCoinText();
+        }
+
+        Debug.Log($"Coin collected! Value: {coin.value}, Total: {SaveLoadManager.Instance.totalCoins}");
     }
 
-    // * Update UI text with current coin count
-    private void UpdateCoinText()
+    // * Update coin text with current coin count
+    public void UpdateCoinText()
     {
-        coinText.text = $"x {coinCount:00000}";
+        if (coinText != null && SaveLoadManager.Instance != null)
+        {
+            coinText.text = $"x {SaveLoadManager.Instance.totalCoins:00000}";
+        }
     }
 }
