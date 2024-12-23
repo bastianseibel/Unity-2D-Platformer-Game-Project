@@ -8,9 +8,10 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] private CanvasGroup fadeImage;
     [SerializeField] private float fadeSpeed = 1f;
-    
+
     private bool isTransitioning = false;
 
+    // * Singleton pattern
     private void Awake()
     {
         if (Instance == null)
@@ -24,36 +25,55 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    // * Start method to initialize fade image
     private void Start()
     {
         fadeImage.alpha = 0;
         fadeImage.gameObject.SetActive(false);
     }
 
+    // * Load level complete scene
     public void LoadLevelCompleteScene()
     {
         StartCoroutine(LoadLevelWithFade("LevelCompleteScene"));
     }
 
+    // * Load next level
     public void LoadNextLevel()
     {
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        
-    if (currentIndex == 3)
+        int nextIndex = (currentIndex == 3) ? 2 : currentIndex + 1;
+
+        if (SaveLoadManager.Instance.IsLevelUnlocked(nextIndex - 1))
         {
-            StartCoroutine(LoadLevelWithFade(2));
+            StartCoroutine(LoadLevelWithFade(nextIndex));
         }
         else
         {
-            StartCoroutine(LoadLevelWithFade(currentIndex + 1));
+            Debug.Log("Level not unlocked");
         }
     }
 
+    // * Load a specific level
+    public void LoadLevel(int levelIndex)
+    {
+        if (SaveLoadManager.Instance.IsLevelUnlocked(levelIndex))
+        {
+            StartCoroutine(LoadLevelWithFade(levelIndex));
+        }
+        else
+        {
+            Debug.Log("Level not unlocked");
+        }
+    }
+
+    // * Load main menu
     public void LoadMainMenu()
     {
         StartCoroutine(LoadLevelWithFade("MainMenu"));
     }
 
+    // * Load level with fade effect
     private IEnumerator LoadLevelWithFade(string sceneName)
     {
         isTransitioning = true;
@@ -63,6 +83,7 @@ public class LevelManager : MonoBehaviour
         isTransitioning = false;
     }
 
+    // * Load level with fade effect
     private IEnumerator LoadLevelWithFade(int sceneIndex)
     {
         isTransitioning = true;
@@ -72,6 +93,7 @@ public class LevelManager : MonoBehaviour
         isTransitioning = false;
     }
 
+    // * Fade in effect
     private IEnumerator FadeIn()
     {
         fadeImage.gameObject.SetActive(true);
@@ -82,6 +104,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    // * Fade out effect
     private IEnumerator FadeOut()
     {
         while (fadeImage.alpha > 0)

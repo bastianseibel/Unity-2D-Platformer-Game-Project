@@ -42,7 +42,6 @@ public class EnemieManager : MonoBehaviour
         Vector2 movement;
         if (movingRight)
         {
-            // Bewegung nach rechts
             movement = transform.right * moveSpeed * Time.deltaTime;
             transform.position += (Vector3)movement;
 
@@ -103,15 +102,6 @@ public class EnemieManager : MonoBehaviour
         {
             isDying = true;
             moveSpeed = 0;
-
-            if (SaveLoadManager.Instance != null)
-            {
-                UniqueID enemyID = GetComponent<UniqueID>();
-                if (enemyID != null)
-                {
-                    SaveLoadManager.Instance.RegisterDefeatedEnemy(enemyID.uniqueID);
-                }
-            }
 
             if (animator != null)
             {

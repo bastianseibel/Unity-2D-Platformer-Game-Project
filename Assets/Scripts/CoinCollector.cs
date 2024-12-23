@@ -20,12 +20,6 @@ public class CoinCollector : MonoBehaviour
             Coin coin = collision.GetComponent<Coin>();
             if (coin != null)
             {
-                UniqueID coinID = coin.GetComponent<UniqueID>();
-                if (coinID != null)
-                {
-                    SaveLoadManager.Instance.RegisterCollectedCoin(coinID.uniqueID);
-                }
-
                 coinManager.addCoin(coin);
                 Destroy(collision.gameObject);
             }

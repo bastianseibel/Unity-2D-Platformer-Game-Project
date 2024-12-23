@@ -1,38 +1,26 @@
 using UnityEngine;
 using System.IO;
-using System.Linq;
-using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class SaveLoadManager : MonoBehaviour
 {
     public static SaveLoadManager Instance { get; private set; }
     private string savePath;
-    public List<string> collectedCoins = new List<string>();
-    public List<string> defeatedEnemies = new List<string>();
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F5))
-        {
-            SaveGame();
-            Debug.Log("Spiel gespeichert!");
-        }
+    public int totalCoins { get; private set; }
+    public bool[] unlockedLevels = new bool[2];
+    public int lastUnlockedLevel = 0;
 
-        if (Input.GetKeyDown(KeyCode.F9))
-        {
-            LoadGame();
-            Debug.Log("Spiel geladen!");
-        }
-    }
 
+    // * Singleton pattern
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            savePath = Path.Combine(Application.persistentDataPath, "gamesave.dat");
+            savePath = Path.Combine(Application.persistentDataPath, "gameProgress.dat");
+            LoadProgress();
         }
         else
         {
@@ -40,45 +28,54 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
-    public void RegisterCollectedCoin(string coinID)
+    // * Load game progress from file
+    private void LoadProgress()
     {
-        if (!collectedCoins.Contains(coinID))
+        if (!File.Exists(savePath))
         {
-            collectedCoins.Add(coinID);
+            InitializeNewSave();
+            return;
+        }
+
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            using (FileStream stream = new FileStream(savePath, FileMode.Open))
+            {
+                SaveData saveData = formatter.Deserialize(stream) as SaveData;
+                totalCoins = saveData.totalCoins;
+                unlockedLevels = saveData.unlockedLevels;
+                lastUnlockedLevel = saveData.lastUnlockedLevel;
+            }
+            Debug.Log($"Game progress loaded - Coins: {totalCoins}");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error loading game progress: {e.Message}");
+            InitializeNewSave();
         }
     }
 
-    public void RegisterDefeatedEnemy(string enemyID)
+    // * Initialize new save
+    private void InitializeNewSave()
     {
-        if (!defeatedEnemies.Contains(enemyID))
-        {
-            defeatedEnemies.Add(enemyID);
-        }
+        totalCoins = 0;
+        unlockedLevels = new bool[2];
+        unlockedLevels[0] = true;
+        lastUnlockedLevel = 0;
+        SaveProgress();
     }
 
-    public void SaveGame()
+    // * Save game progress to file
+    public void SaveProgress()
     {
         try
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            HeroHealth heroHealth = player.GetComponent<HeroHealth>();
-            CoinManager coinManager = FindObjectOfType<CoinManager>();
-
-            PlayerSaveData saveData = new PlayerSaveData
+            SaveData saveData = new SaveData
             {
-                positionX = player.transform.position.x,
-                positionY = player.transform.position.y,
-                positionZ = player.transform.position.z,
-                currentHealth = heroHealth.currentHealth,
-                coinCount = coinManager.coinCount,
-
-                checkpointX = heroHealth.spawnPoint.x,
-                checkpointY = heroHealth.spawnPoint.y,
-                checkpointZ = heroHealth.spawnPoint.z,
-                hasCheckpoint = (heroHealth.spawnPoint != player.transform.position),
-
-                collectedCoinIDs = collectedCoins.ToArray(),
-                defeatedEnemyIDs = defeatedEnemies.ToArray()
+                totalCoins = totalCoins,
+                unlockedLevels = unlockedLevels,
+                lastUnlockedLevel = lastUnlockedLevel
             };
 
             BinaryFormatter formatter = new BinaryFormatter();
@@ -86,73 +83,38 @@ public class SaveLoadManager : MonoBehaviour
             {
                 formatter.Serialize(stream, saveData);
             }
-
-            Debug.Log("Spiel gespeichert!");
+            Debug.Log($"Game progress saved - Coins: {totalCoins}");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Fehler beim Speichern: {e.Message}");
+            Debug.LogError($"Error saving game progress: {e.Message}");
         }
     }
 
-    public void LoadGame()
+    // * Add coins to total
+    public void AddCoins(int amount)
     {
-        if (!File.Exists(savePath)) return;
+        totalCoins += amount;
+        SaveProgress();
+    }
 
-        try
+    // * Unlock a level
+    public void UnlockLevel(int levelIndex)
+    {
+        if (levelIndex < unlockedLevels.Length)
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            PlayerSaveData saveData;
-            using (FileStream stream = new FileStream(savePath, FileMode.Open))
+            unlockedLevels[levelIndex] = true;
+            if (levelIndex > lastUnlockedLevel)
             {
-                saveData = formatter.Deserialize(stream) as PlayerSaveData;
+                lastUnlockedLevel = levelIndex;
             }
-
-            collectedCoins = new List<string>(saveData.collectedCoinIDs);
-            defeatedEnemies = new List<string>(saveData.defeatedEnemyIDs);
-
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            HeroHealth heroHealth = player.GetComponent<HeroHealth>();
-            CoinManager coinManager = FindObjectOfType<CoinManager>();
-
-            if (saveData.hasCheckpoint)
-            {
-                Vector3 checkpointPos = new Vector3(saveData.checkpointX, saveData.checkpointY, saveData.checkpointZ);
-                heroHealth.SetSpawnPoint(checkpointPos);
-                player.transform.position = checkpointPos;
-            }
-            else
-            {
-                player.transform.position = new Vector3(saveData.positionX, saveData.positionY, saveData.positionZ);
-            }
-
-            heroHealth.currentHealth = saveData.currentHealth;
-            coinManager.coinCount = saveData.coinCount;
-            coinManager.UpdateCoinText();
-
-            foreach (Coin coin in FindObjectsOfType<Coin>())
-            {
-                UniqueID coinID = coin.GetComponent<UniqueID>();
-                if (coinID != null && collectedCoins.Contains(coinID.uniqueID))
-                {
-                    Destroy(coin.gameObject);
-                }
-            }
-
-            foreach (EnemieManager enemy in FindObjectsOfType<EnemieManager>())
-            {
-                UniqueID enemyID = enemy.GetComponent<UniqueID>();
-                if (enemyID != null && defeatedEnemies.Contains(enemyID.uniqueID))
-                {
-                    Destroy(enemy.gameObject);
-                }
-            }
-
-            Debug.Log("Spiel geladen!");
+            SaveProgress();
         }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Fehler beim Laden: {e.Message}");
-        }
+    }
+
+    // * Check if a level is unlocked
+    public bool IsLevelUnlocked(int levelIndex)
+    {
+        return levelIndex < unlockedLevels.Length && unlockedLevels[levelIndex];
     }
 }
