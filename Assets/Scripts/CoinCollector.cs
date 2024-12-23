@@ -12,6 +12,7 @@ public class CoinCollector : MonoBehaviour
     }
 
     // * Check for collision with coins and collect them
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Coin"))
@@ -19,8 +20,14 @@ public class CoinCollector : MonoBehaviour
             Coin coin = collision.GetComponent<Coin>();
             if (coin != null)
             {
+                UniqueID coinID = coin.GetComponent<UniqueID>();
+                if (coinID != null)
+                {
+                    SaveLoadManager.Instance.RegisterCollectedCoin(coinID.uniqueID);
+                }
+
                 coinManager.addCoin(coin);
-                Destroy(collision.gameObject);          
+                Destroy(collision.gameObject);
             }
             else
             {

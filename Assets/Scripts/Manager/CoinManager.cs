@@ -21,7 +21,7 @@ public class CoinManager : MonoBehaviour
     }
 
     // * Update UI text with current coin count
-    private void UpdateCoinText()
+    public void UpdateCoinText()
     {
         coinText.text = $"x {coinCount:00000}";
     }

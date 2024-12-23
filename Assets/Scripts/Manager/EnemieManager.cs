@@ -45,7 +45,7 @@ public class EnemieManager : MonoBehaviour
             // Bewegung nach rechts
             movement = transform.right * moveSpeed * Time.deltaTime;
             transform.position += (Vector3)movement;
-            
+
             if (transform.position.x >= startPosition.x + moveDistance)
             {
                 movingRight = false;
@@ -56,7 +56,7 @@ public class EnemieManager : MonoBehaviour
         {
             movement = -transform.right * moveSpeed * Time.deltaTime;
             transform.position += (Vector3)movement;
-            
+
             if (transform.position.x <= startPosition.x - moveDistance)
             {
                 movingRight = true;
@@ -85,7 +85,7 @@ public class EnemieManager : MonoBehaviour
             }
         }
     }
-    
+
     // * Handle enemy taking damage
     public void TakeDamage(int damage)
     {
@@ -103,16 +103,25 @@ public class EnemieManager : MonoBehaviour
         {
             isDying = true;
             moveSpeed = 0;
-            
+
+            if (SaveLoadManager.Instance != null)
+            {
+                UniqueID enemyID = GetComponent<UniqueID>();
+                if (enemyID != null)
+                {
+                    SaveLoadManager.Instance.RegisterDefeatedEnemy(enemyID.uniqueID);
+                }
+            }
+
             if (animator != null)
             {
                 animator.SetTrigger("Death");
-                
+
                 if (GetComponent<Collider2D>() != null)
                 {
                     GetComponent<Collider2D>().enabled = false;
                 }
-                
+
                 Destroy(gameObject, 0.4f);
             }
             else
