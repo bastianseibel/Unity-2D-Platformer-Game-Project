@@ -8,14 +8,14 @@ public class SaveData
    public int lastUnlockedLevel;
    public float[] levelBestTimes;
 
-   // * Constructor for initializing save data
-   public SaveData()
+   public SaveData(int levelCount = 2)
    {
       totalCoins = 0;
-      unlockedLevels = new bool[2];
+      unlockedLevels = new bool[levelCount];
       unlockedLevels[0] = true;
       lastUnlockedLevel = 0;
-      levelBestTimes = new float[2];
+      levelBestTimes = new float[levelCount];
+
       for (int i = 0; i < levelBestTimes.Length; i++)
       {
          levelBestTimes[i] = float.MaxValue;
