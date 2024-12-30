@@ -1186,8 +1186,6 @@ MonoBehaviour:
   maxHealth: 2
   immunityDuration: 1.5
   deathDuration: 1.5
-  spawnPoint: {x: 0, y: 0, z: 0}
-  currentHealth: 2
 --- !u!114 &256870142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5199,9 +5197,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 150d52efa6a625f4c962221be8190879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unlockedLevels: 000000
-  lastUnlockedLevel: 0
-  levelBestTimes: []
 --- !u!1 &1948110105
 GameObject:
   m_ObjectHideFlags: 0

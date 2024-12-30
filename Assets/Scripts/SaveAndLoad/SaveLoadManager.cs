@@ -1,22 +1,23 @@
 using UnityEngine;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading.Tasks;
 
 public class SaveLoadManager : MonoBehaviour
 {
     public static SaveLoadManager Instance { get; private set; }
     private string savePath;
-
-    public int totalCoins { get; private set; }
-    public bool[] unlockedLevels;
-    public int lastUnlockedLevel = 0;
-    public float[] levelBestTimes;
+    private SaveData saveData;
+    private bool isSaving;
 
     private const int LEVEL_COUNT = 2;
+    private const string SAVE_FILENAME = "gameData.json";
 
+    public int totalCoins => saveData.totalCoins;
+    public bool[] unlockedLevels => saveData.unlockedLevels;
+    public int lastUnlockedLevel => saveData.lastUnlockedLevel;
+    public float[] levelBestTimes => saveData.levelBestTimes;
 
-    // * Singleton Pattern 
-    void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -30,130 +31,106 @@ public class SaveLoadManager : MonoBehaviour
         }
     }
 
-    // * Initialize and Load
     private void InitializeAndLoad()
     {
-        savePath = Path.Combine(Application.persistentDataPath, "gameProgress.dat");
-        InitializeArrays();
+        savePath = Path.Combine(Application.persistentDataPath, SAVE_FILENAME);
         LoadProgress();
     }
 
-    // * Initialize Arrays
-    private void InitializeArrays()
-    {
-        unlockedLevels = new bool[LEVEL_COUNT];
-        unlockedLevels[0] = true;
-        levelBestTimes = new float[LEVEL_COUNT];
-        for (int i = 0; i < LEVEL_COUNT; i++)
-        {
-            levelBestTimes[i] = float.MaxValue;
-        }
-    }
-    // * Load Progress
     private void LoadProgress()
     {
-        if (!File.Exists(savePath))
-        {
-            InitializeNewSave();
-            return;
-        }
-
         try
         {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream stream = new FileStream(savePath, FileMode.Open))
+            if (File.Exists(savePath))
             {
-                SaveData saveData = formatter.Deserialize(stream) as SaveData;
-                totalCoins = saveData.totalCoins;
-                unlockedLevels = saveData.unlockedLevels;
-                lastUnlockedLevel = saveData.lastUnlockedLevel;
-                levelBestTimes = saveData.levelBestTimes;
+                string jsonData = File.ReadAllText(savePath);
+                saveData = new SaveData(LEVEL_COUNT);
+                JsonUtility.FromJsonOverwrite(jsonData, saveData);
+            }
+            else
+            {
+                InitializeNewSave();
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error loading game progress: {e.Message}");
+            Debug.LogError($"Error loading save data: {e.Message}");
             InitializeNewSave();
         }
     }
 
-    // * Initialize New Save
     private void InitializeNewSave()
     {
-        totalCoins = 0;
-        InitializeArrays();
+        saveData = new SaveData(LEVEL_COUNT);
         SaveProgress();
     }
 
-    // * Save Level Time
-    public void SaveLevelTime(int levelIndex, float time)
+    private async void SaveProgress()
     {
-        if (levelIndex >= 0 && levelIndex < levelBestTimes.Length && time < levelBestTimes[levelIndex])
-        {
-            levelBestTimes[levelIndex] = time;
-            SaveProgress();
-        }
-    }
+        if (isSaving) return;
 
-    // * Get Best Time
-    public float GetBestTime(int levelIndex)
-    {
-        if (levelIndex < levelBestTimes.Length)
-        {
-            return levelBestTimes[levelIndex];
-        }
-        return float.MaxValue;
-    }
+        isSaving = true;
 
-    // * Save Progress
-    public void SaveProgress()
-    {
         try
         {
-            SaveData saveData = new SaveData
+            string jsonData = JsonUtility.ToJson(saveData, true);
+            await Task.Run(() =>
             {
-                totalCoins = totalCoins,
-                unlockedLevels = unlockedLevels,
-                lastUnlockedLevel = lastUnlockedLevel,
-                levelBestTimes = levelBestTimes
-            };
-
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (FileStream stream = new FileStream(savePath, FileMode.Create))
-            {
-                formatter.Serialize(stream, saveData);
-            }
+                File.WriteAllText(savePath, jsonData);
+            });
         }
         catch (System.Exception e)
         {
             Debug.LogError($"Error saving game progress: {e.Message}");
         }
+        finally
+        {
+            isSaving = false;
+        }
     }
 
-    // * Add Coins
     public void AddCoins(int amount)
     {
-        totalCoins += amount;
+        saveData.totalCoins += amount;
         SaveProgress();
     }
 
-    // * Unlock Level
+    public void SaveLevelTime(int levelIndex, float time)
+    {
+        if (levelIndex >= 0 && levelIndex < saveData.levelBestTimes.Length)
+        {
+            if (time < saveData.levelBestTimes[levelIndex])
+            {
+                saveData.levelBestTimes[levelIndex] = time;
+                SaveProgress();
+            }
+        }
+    }
+
+    public float GetBestTime(int levelIndex)
+    {
+        if (levelIndex < saveData.levelBestTimes.Length)
+        {
+            return saveData.levelBestTimes[levelIndex];
+        }
+        return float.MaxValue;
+    }
+
     public void UnlockLevel(int levelIndex)
     {
-        if (levelIndex < unlockedLevels.Length)
+        if (levelIndex < saveData.unlockedLevels.Length)
         {
-            unlockedLevels[levelIndex] = true;
-            if (levelIndex > lastUnlockedLevel)
+            saveData.unlockedLevels[levelIndex] = true;
+            if (levelIndex > saveData.lastUnlockedLevel)
             {
-                lastUnlockedLevel = levelIndex;
+                saveData.lastUnlockedLevel = levelIndex;
             }
             SaveProgress();
         }
     }
 
-    // * Is Level Unlocked
     public bool IsLevelUnlocked(int levelIndex)
     {
-        return levelIndex < unlockedLevels.Length && unlockedLevels[levelIndex];
+        return levelIndex < saveData.unlockedLevels.Length && saveData.unlockedLevels[levelIndex];
     }
 }
