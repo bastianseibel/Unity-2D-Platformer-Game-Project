@@ -82,6 +82,11 @@ public class HeroHealth : MonoBehaviour
         DisableMovement();
         animationController.PlayDeathAnimation();
         StartCoroutine(RespawnAfterDelay());
+
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.RespawnPlayer(gameObject);
+        }
     }
 
     private void DisableMovement()
