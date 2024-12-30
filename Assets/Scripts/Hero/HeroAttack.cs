@@ -27,16 +27,17 @@ public class HeroAttack : MonoBehaviour
     // * Perform attack and damage enemies
     void Attack()
     {
-        // Trigger attack animation
         anim.SetTrigger("HeroAttack");
 
-        // Check for enemies in attack range
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, EnemyLayer);
 
-        // Deal damage to each enemy hit
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemieManager>().TakeDamage(attackDamage);
+            EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(attackDamage);
+            }
         }
     }
 
