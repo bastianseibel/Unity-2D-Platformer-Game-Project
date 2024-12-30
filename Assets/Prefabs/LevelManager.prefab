@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 4751613498259665483}
   - component: {fileID: 1420195974223658757}
   - component: {fileID: 200439176802571750}
-  - component: {fileID: 3714459104692329411}
+  - component: {fileID: 3492432530648379895}
+  - component: {fileID: 400067157944382994}
   m_Layer: 5
   m_Name: LevelManager
   m_TagString: Untagged
@@ -103,7 +104,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3714459104692329411
+--- !u!114 &3492432530648379895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2568840582363974635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0542aa1b143b494086346978ad5c61f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeImage: {fileID: 933789044673179440}
+  fadeSpeed: 1
+--- !u!114 &400067157944382994
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,8 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e16b5bf0d2eb9f48863199525bb0212, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fadeImage: {fileID: 933789044673179440}
-  fadeSpeed: 1.5
+  transitionManager: {fileID: 0}
 --- !u!1 &7619578248529332863
 GameObject:
   m_ObjectHideFlags: 0
