@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private string buttonType;  // "left", "right", "jump", "up", "down", "attack"
+    [SerializeField] private string buttonType;
 
     public void OnPointerDown(PointerEventData eventData)
     {
