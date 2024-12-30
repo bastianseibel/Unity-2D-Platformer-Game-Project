@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     // * References to other Player Components
-    private HeroMovement heroMovement;
+    private HeroMovementController movementController;
     private Rigidbody2D playerRb;
     private HeroAttack heroAttack;
     private LadderMovement ladderMovement;
@@ -18,7 +18,7 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            heroMovement = player.GetComponent<HeroMovement>();
+            movementController = player.GetComponent<HeroMovementController>();
             playerRb = player.GetComponent<Rigidbody2D>();
             heroAttack = player.GetComponent<HeroAttack>();
         }
@@ -31,21 +31,21 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         switch(buttonType.ToLower())
         {
             case "left":
-                heroMovement.Move(-1);
+                movementController.Move(-1);
                 break;
             case "right":
-                heroMovement.Move(1);
+                movementController.Move(1);
+                break;
+            case "jump":
+                movementController.Jump();
                 break;
             case "up":
                 if (ladderMovement != null)
-                    ladderMovement.OnUpButtonDown();;
+                    ladderMovement.OnUpButtonDown();
                 break;
             case "down":
                 if (ladderMovement != null)
                     ladderMovement.OnDownButtonDown();
-                break;
-            case "jump":
-                heroMovement.Jump();
                 break;
             case "attack":
                 if (heroAttack != null)
@@ -63,7 +63,7 @@ public class ButtonController : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         {
             case "left":
             case "right":
-                heroMovement.Move(0);
+                movementController.Move(0);
                 break;
             case "up":
                 if (ladderMovement != null)

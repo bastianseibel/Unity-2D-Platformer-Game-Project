@@ -3,18 +3,25 @@ using UnityEngine;
 public class LadderMovement : MonoBehaviour
 {
     // * References to player components
-    private HeroMovement heroMovement;
+    private HeroMovementController movementController;
     private Rigidbody2D playerRb;
     
     // * Track ladder movement state
     private bool isMovingUp = false;
     private bool isMovingDown = false;
+    private bool isOnLadder = false;
+
+    [SerializeField] private float climbSpeed = 8f;
 
     // * Get player components at start
     private void Start()
     {
-        heroMovement = GameObject.FindGameObjectWithTag("Player").GetComponent<HeroMovement>();
-        playerRb = heroMovement.GetComponent<Rigidbody2D>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            movementController = player.GetComponent<HeroMovementController>();
+            playerRb = player.GetComponent<Rigidbody2D>();
+        }
     }
 
     // * Enable ladder movement when player enters
@@ -22,7 +29,7 @@ public class LadderMovement : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            heroMovement.isOnLadder = true;
+            isOnLadder = true;
             playerRb.gravityScale = 0;
         }
     }
@@ -32,7 +39,7 @@ public class LadderMovement : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            heroMovement.isOnLadder = false;
+            isOnLadder = false;
             playerRb.gravityScale = 1;
             isMovingUp = false;
             isMovingDown = false;
@@ -42,7 +49,7 @@ public class LadderMovement : MonoBehaviour
     // * Check for ladder movement every frame
     private void Update()
     {
-        if (heroMovement.isOnLadder)
+        if (isOnLadder)
         {
             HandleLadderMovement();
         }
@@ -56,13 +63,13 @@ public class LadderMovement : MonoBehaviour
         if (isMovingUp) verticalMovement = 1;
         if (isMovingDown) verticalMovement = -1;
 
-        playerRb.velocity = new Vector2(playerRb.velocity.x, verticalMovement * heroMovement.speed);
+        playerRb.velocity = new Vector2(playerRb.velocity.x, verticalMovement * climbSpeed);
     }
 
     // * Button input handlers for ladder movement
     public void OnUpButtonDown()
     {
-        if (heroMovement.isOnLadder)
+        if (isOnLadder)
         {
             isMovingUp = true;
         }
@@ -75,7 +82,7 @@ public class LadderMovement : MonoBehaviour
 
     public void OnDownButtonDown()
     {
-        if (heroMovement.isOnLadder)
+        if (isOnLadder)
         {
             isMovingDown = true;
         }

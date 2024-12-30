@@ -12,8 +12,8 @@ public class HeroHealth : MonoBehaviour
 
     // * Required component references
     [Header("References")]
-    private Animator animator;
-    private HeroMovement heroMovement;
+    private HeroMovementController movementController;
+    private HeroAnimationController animationController;
     private HeartManager heartManager;
     public Vector3 spawnPoint;
 
@@ -32,8 +32,8 @@ public class HeroHealth : MonoBehaviour
     // * Get all required components
     private void InitializeComponents()
     {
-        animator = GetComponent<Animator>();
-        heroMovement = GetComponent<HeroMovement>();
+        movementController = GetComponent<HeroMovementController>();
+        animationController = GetComponent<HeroAnimationController>();
         heartManager = FindObjectOfType<HeartManager>();
         spawnPoint = transform.position;
     }
@@ -66,7 +66,7 @@ public class HeroHealth : MonoBehaviour
     // * Play damage animation and start immunity
     private void HandleDamageEffect()
     {
-        animator.SetTrigger("Damage");
+        animationController.PlayDamageAnimation();
         StartCoroutine(ImmunityEffect());
     }
 
@@ -81,17 +81,24 @@ public class HeroHealth : MonoBehaviour
     // * Handle death sequence
     public void Die()
     {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.isKinematic = true;
+        }
+
         DisableMovement();
-        animator.SetTrigger("Die");
+        animationController.PlayDeathAnimation();
         StartCoroutine(RespawnAfterDelay());
     }
 
     // * Disable movement during death
     private void DisableMovement()
     {
-        if (heroMovement != null)
+        if (movementController != null)
         {
-            heroMovement.enabled = false;
+            movementController.enabled = false;
         }
     }
 
@@ -105,34 +112,30 @@ public class HeroHealth : MonoBehaviour
     // * Reset character state and position
     private void Respawn()
     {
+        if (animationController != null)
+        {
+            animationController.ResetAnimations();
+        }
+
         ResetHealth();
         transform.position = spawnPoint;
-        ResetAnimations();
+        
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.velocity = Vector2.zero;
+        }
+        
         EnableMovement();
-    }
-
-    // * Reset all animation states
-    private void ResetAnimations()
-    {
-        animator.Rebind();
-        animator.Update(0f);
-
-        animator.SetBool("IsWalking", false);
-        animator.SetBool("IsJumping", false);
-        animator.SetBool("IsFalling", false);
-        animator.ResetTrigger("Damage");
-        animator.ResetTrigger("Die");
-        animator.ResetTrigger("HeroAttack");
-
-        animator.Play("HeroIdle", 0, 0f);
     }
 
     // * Re-enable movement after respawn
     private void EnableMovement()
     {
-        if (heroMovement != null)
+        if (movementController != null)
         {
-            heroMovement.enabled = true;
+            movementController.enabled = true;
         }
     }
 

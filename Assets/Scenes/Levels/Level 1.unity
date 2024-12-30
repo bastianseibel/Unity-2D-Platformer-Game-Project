@@ -1034,7 +1034,6 @@ GameObject:
   - component: {fileID: 256870138}
   - component: {fileID: 256870143}
   - component: {fileID: 256870140}
-  - component: {fileID: 256870134}
   - component: {fileID: 256870141}
   - component: {fileID: 256870142}
   - component: {fileID: 256870145}
@@ -1046,33 +1045,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &256870134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 256870133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aeb493b34fc0eed49979b5dce893d9df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 4
-  acceleration: 50
-  deceleration: 50
-  jumpForce: 6
-  airControl: 40
-  maxFallSpeed: 15
-  maxJumps: 1
-  fallMultiplier: 1
-  lowJumpMultiplier: 2
-  groundCheck: {fileID: 1237433593}
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 192
-  groundCheckRadius: 0.2
-  isOnLadder: 0
 --- !u!212 &256870135
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1134,7 +1106,7 @@ Transform:
   m_GameObject: {fileID: 256870133}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -51.53, y: 12.6, z: 0}
+  m_LocalPosition: {x: -5.94, y: 0.09, z: 0}
   m_LocalScale: {x: 1.8, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
