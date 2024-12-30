@@ -23,6 +23,16 @@ public class HeroHealth : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        LevelEvents.OnPlayerDeath += Die;
+    }
+
+    private void OnDisable()
+    {
+        LevelEvents.OnPlayerDeath -= Die;
+    }
+
     private void Start()
     {
         InitializeComponents();

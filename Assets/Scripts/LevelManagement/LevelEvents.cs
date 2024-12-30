@@ -3,6 +3,7 @@ using System;
 
 public static class LevelEvents
 {
+    public static event Action OnPlayerDeath;
     public static event Action<LevelState> OnLevelStateChanged;
     public static event Action OnLevelCompleted;
     public static event Action<int> OnLevelLoading;
@@ -15,6 +16,11 @@ public static class LevelEvents
     public static void TriggerLevelCompleted()
     {
         OnLevelCompleted?.Invoke();
+    }
+
+    public static void TriggerPlayerDeath()
+    {
+        OnPlayerDeath?.Invoke();
     }
 
     public static void TriggerLevelLoading(int levelIndex)
