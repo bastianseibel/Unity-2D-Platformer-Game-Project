@@ -2,29 +2,35 @@ using UnityEngine;
 
 public class HeroAttack : MonoBehaviour
 {
-    // * Attack settings
-    public Transform attackPoint;
+    [Header("Attack Settings")]
+    [SerializeField] private Transform attackPoint;
     public LayerMask EnemyLayer;
-    public float attackRange = 0.5f;
-    public int attackDamage;
+    [SerializeField] private float attackRange = 0.5f;
+    [SerializeField] private int attackDamage;
 
-    // * Animation component
     private Animator anim;
     
-    // * Initialize animator
     void Start()
     {
         anim = GetComponent<Animator>();
         anim.ResetTrigger("HeroAttack");
     }
 
-    // * Called by button press
-    public void OnAttackButtonPressed()
+    private void OnEnable()
+    {
+        UIEvents.OnAttackButtonPressed += HandleAttack;
+    }
+
+    private void OnDisable()
+    {
+        UIEvents.OnAttackButtonPressed -= HandleAttack;
+    }
+
+    private void HandleAttack()
     {
         Attack();
     }
 
-    // * Perform attack and damage enemies
     void Attack()
     {
         anim.SetTrigger("HeroAttack");
@@ -41,9 +47,10 @@ public class HeroAttack : MonoBehaviour
         }
     }
 
-    // * Draw attack range in editor for debugging
     void OnDrawGizmosSelected()
     {
+        if (attackPoint == null) return;
+        
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }

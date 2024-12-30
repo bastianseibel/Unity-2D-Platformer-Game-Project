@@ -18,7 +18,6 @@ public class HeroMovementController : MonoBehaviour
     [SerializeField] private float lowJumpMultiplier = 2f;
 
     private Rigidbody2D rb;
-    private HeroInputHandler inputHandler;
     private HeroGroundCheck groundCheck;
     private int jumpCount;
     private float moveDirectionX;
@@ -28,41 +27,39 @@ public class HeroMovementController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        inputHandler = GetComponent<HeroInputHandler>();
         groundCheck = GetComponent<HeroGroundCheck>();
     }
 
     private void OnEnable()
     {
-        inputHandler.OnMoveInput += HandleMovement;
-        inputHandler.OnJumpInput += HandleJump;
+        UIEvents.OnControlButtonStateChanged += HandleControlInput;
         groundCheck.OnGroundedStateChanged += HandleGroundedStateChanged;
     }
 
     private void OnDisable()
     {
-        inputHandler.OnMoveInput -= HandleMovement;
-        inputHandler.OnJumpInput -= HandleJump;
+        UIEvents.OnControlButtonStateChanged -= HandleControlInput;
         groundCheck.OnGroundedStateChanged -= HandleGroundedStateChanged;
     }
 
-    // * Public method to move the player
-    public void Move(float direction)
+    private void HandleControlInput(string buttonType, bool isPressed)
     {
-        HandleMovement(direction);
+        switch(buttonType.ToLower())
+        {
+            case "left":
+                HandleMovement(isPressed ? -1 : 0);
+                break;
+            case "right":
+                HandleMovement(isPressed ? 1 : 0);
+                break;
+            case "jump":
+                if (isPressed)
+                    HandleJump();
+                SetJumpButtonState(isPressed);
+                break;
+        }
     }
 
-    public void Jump()
-    {
-        HandleJump();
-    }
-
-    public void SetJumpButtonState(bool isHeld)
-    {
-        isJumpButtonHeld = isHeld;
-    }
-
-    // * Handle movement
     private void HandleMovement(float direction)
     {
         moveDirectionX = direction;
@@ -72,7 +69,6 @@ public class HeroMovementController : MonoBehaviour
         }
     }
 
-    // * Handle jump
     private void HandleJump()
     {
         if (jumpCount < maxJumps)
@@ -82,7 +78,6 @@ public class HeroMovementController : MonoBehaviour
         }
     }
 
-    // * Handle grounded state changed
     private void HandleGroundedStateChanged(bool isGrounded)
     {
         if (isGrounded)
@@ -98,7 +93,6 @@ public class HeroMovementController : MonoBehaviour
         PreventWallSticking();
     }
 
-    // * Apply movement
     private void ApplyMovement()
     {
         float targetSpeed = moveDirectionX * speed;
@@ -113,7 +107,6 @@ public class HeroMovementController : MonoBehaviour
         rb.velocity = new Vector2(newSpeed, rb.velocity.y);
     }
 
-    // * Apply jump physics
     private void ApplyJumpPhysics()
     {
         if (rb.velocity.y < 0)
@@ -121,13 +114,12 @@ public class HeroMovementController : MonoBehaviour
             rb.velocity += Vector2.up * Physics2D.gravity.y * fallMultiplier * Time.fixedDeltaTime;
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
         }
-        else if (rb.velocity.y > 0 && !Input.GetButton("Jump")) // Behalten wie es war
+        else if (rb.velocity.y > 0 && !isJumpButtonHeld)
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * lowJumpMultiplier * Time.fixedDeltaTime;
         }
     }
 
-    // * Flip the player
     private void Flip()
     {
         facingRight = !facingRight;
@@ -136,7 +128,6 @@ public class HeroMovementController : MonoBehaviour
         transform.localScale = scale;
     }
 
-    // * Prevent wall sticking
     private void PreventWallSticking()
     {
         float distance = 0.1f;
@@ -145,5 +136,17 @@ public class HeroMovementController : MonoBehaviour
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
         }
+    }
+
+    public void SetJumpButtonState(bool isHeld)
+    {
+        isJumpButtonHeld = isHeld;
+    }
+
+    public void ResetMovementState()
+    {
+        moveDirectionX = 0;
+        rb.velocity = Vector2.zero;
+        isJumpButtonHeld = false;
     }
 }
