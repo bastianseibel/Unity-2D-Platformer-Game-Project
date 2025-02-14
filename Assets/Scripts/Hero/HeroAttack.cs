@@ -9,6 +9,8 @@ public class HeroAttack : MonoBehaviour
     [SerializeField] private int attackDamage;
 
     private Animator anim;
+
+    public AudioSource attackSound;
     
     void Start()
     {
@@ -33,6 +35,7 @@ public class HeroAttack : MonoBehaviour
 
     void Attack()
     {
+        attackSound.Play();
         anim.SetTrigger("HeroAttack");
 
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, EnemyLayer);

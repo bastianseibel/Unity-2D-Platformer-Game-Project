@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class LevelFinishTrigger : MonoBehaviour
 {
+    [SerializeField] private AudioSource finishSound;   
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -28,6 +29,7 @@ public class LevelFinishTrigger : MonoBehaviour
 
     private void CompleteLevel()
     {
+        finishSound.Play();
         if (TimerManager.Instance != null)
             TimerManager.Instance.StopTimer();
 

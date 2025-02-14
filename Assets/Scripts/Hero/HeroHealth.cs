@@ -7,6 +7,10 @@ public class HeroHealth : MonoBehaviour
     [SerializeField] private float immunityDuration = 1.5f;
     [SerializeField] private float deathDuration = 1.5f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource damageSound;
+    [SerializeField] private AudioSource healSound;
+    [SerializeField] private AudioSource deathSound;
     private HeroMovementController movementController;
     private HeroAnimationController animationController;
     private Vector3 spawnPoint;
@@ -70,6 +74,7 @@ public class HeroHealth : MonoBehaviour
     private void HandleDamageEffect()
     {
         animationController.PlayDamageAnimation();
+        damageSound.Play();
         StartCoroutine(ImmunityEffect());
     }
 
@@ -82,6 +87,7 @@ public class HeroHealth : MonoBehaviour
 
     public void Die()
     {
+        deathSound.Play();
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
         {
@@ -140,6 +146,7 @@ public class HeroHealth : MonoBehaviour
     public void Heal(int amount)
     {
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        healSound.Play();
     }
 
     public void SetSpawnPoint(Vector3 position)
