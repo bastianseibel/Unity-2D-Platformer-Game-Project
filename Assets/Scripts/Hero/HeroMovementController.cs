@@ -12,6 +12,10 @@ public class HeroMovementController : MonoBehaviour
     [SerializeField] private int maxJumps = 2;
     [SerializeField] private float speed = 8f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource jumpSound;
+    [SerializeField] private AudioSource ladderSound;
+
     [Header("Jump Physics")]
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
@@ -120,6 +124,7 @@ public class HeroMovementController : MonoBehaviour
         
         if (jumpCount < maxJumps)
         {
+            jumpSound.Play();
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpCount++;
         }
@@ -163,6 +168,7 @@ public class HeroMovementController : MonoBehaviour
         
         if (state)
         {
+            ladderSound.Play();
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
         else

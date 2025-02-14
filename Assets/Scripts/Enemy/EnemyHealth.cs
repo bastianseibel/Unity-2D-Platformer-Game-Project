@@ -7,6 +7,9 @@ public class EnemyHealth : MonoBehaviour
     private int currentHealth;
     private bool isDying = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource deathSound;
+
     private EnemyMovementController movementController;
     private EnemyAnimationController animationController;
     private Collider2D enemyCollider;
@@ -32,6 +35,7 @@ public class EnemyHealth : MonoBehaviour
 
     private void Die()
     {
+        deathSound.Play();
         isDying = true;
         
         if (movementController != null)

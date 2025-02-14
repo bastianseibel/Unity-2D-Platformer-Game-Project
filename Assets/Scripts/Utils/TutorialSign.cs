@@ -3,11 +3,13 @@ using TMPro;
 
 public class TutorialSign : MonoBehaviour
 {
-    // * Tutorial UI elements
+    [Header("Tutorial UI")]
     [SerializeField] private string tutorialMessage;
     [SerializeField] private GameObject tutorialUI;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource tutorialSound;
     
-    // * Show tutorial message when player enters trigger
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -16,16 +18,17 @@ public class TutorialSign : MonoBehaviour
             {
                 tmpText.text = tutorialMessage;
                 tutorialUI.SetActive(true);
+                tutorialSound.Play();
             }
         }
     }
 
-    // * Hide tutorial message when player leaves trigger
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
             tutorialUI.SetActive(false);
+            tutorialSound.Stop();
         }
     }
 }
