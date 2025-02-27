@@ -6,6 +6,7 @@ public class CoinManager : MonoBehaviour
     public static CoinManager Instance { get; private set; }
     [SerializeField] private TextMeshProUGUI coinText;
     [SerializeField] private TextMeshProUGUI highscoreText; 
+    [SerializeField] private int level = 0; // Aktuelle Level
 
     void Awake()
     {
@@ -34,7 +35,7 @@ public class CoinManager : MonoBehaviour
         {
             SaveLoadManager.Instance.AddCoins(coin.value);
             UpdateCoinText();
-            SaveHighscore(SaveLoadManager.Instance.totalCoins); 
+            SaveHighscore(level, SaveLoadManager.Instance.totalCoins); // Hier Level 
         }
 
         Debug.Log($"Coin collected! Value: {coin.value}, Total: {SaveLoadManager.Instance.totalCoins}");
@@ -49,9 +50,9 @@ public class CoinManager : MonoBehaviour
     }
 
     // * Save and update high score
-    public void SaveHighscore(int score)
+    public void SaveHighscore(int level, int score)
     {
-        int savedHighscore = PlayerPrefs.GetInt("Highscore", 0);
+        int savedHighscore = PlayerPrefs.GetInt($"Highscore{level}", 0);
         if (score > savedHighscore)
         {
             PlayerPrefs.SetInt("Highscore", score);
