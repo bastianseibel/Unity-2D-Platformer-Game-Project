@@ -12,8 +12,6 @@ public class CoinCollector : MonoBehaviour
         coinManager = FindObjectOfType<CoinManager>();
     }
 
-    // * Check for collision with coins and collect them
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Coin"))
@@ -23,7 +21,7 @@ public class CoinCollector : MonoBehaviour
             {
                 coinManager.addCoin(coin);
                 coinCollectSound.Play();
-                Destroy(collision.gameObject);
+                coin.Collect();
             }
             else
             {

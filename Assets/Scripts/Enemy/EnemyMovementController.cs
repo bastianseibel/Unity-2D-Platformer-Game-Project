@@ -15,6 +15,12 @@ public class EnemyMovementController : MonoBehaviour
         InitializeMovement();
     }
 
+    public void ResetEnemy()
+    {
+        canMove = true;
+        InitializeMovement();
+    }
+
     private void InitializeMovement()
     {
         startPosition = transform.position;

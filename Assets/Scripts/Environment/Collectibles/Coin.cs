@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Coin : MonoBehaviour
+public class Coin : MonoBehaviour, IPooledObject
 {
     // * Different coin types and their values
     public enum CoinType
@@ -21,6 +21,13 @@ public class Coin : MonoBehaviour
         value = GetCoinValue(coinType);
     }
 
+    public void OnObjectSpawn()
+    {
+        // Reset beim Spawnen aus dem Pool
+        value = GetCoinValue(coinType);
+        gameObject.SetActive(true);
+    }
+
     // * Get value based on coin type
     private int GetCoinValue(CoinType type)
     {
@@ -32,5 +39,10 @@ public class Coin : MonoBehaviour
             case CoinType.Diamond: return 5;
             default: return 0;
         }
+    }
+
+    public void Collect()
+    {
+        gameObject.SetActive(false);
     }
 }
