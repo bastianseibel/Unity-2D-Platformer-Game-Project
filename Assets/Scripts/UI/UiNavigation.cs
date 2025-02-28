@@ -28,5 +28,30 @@ public class UiNavigation : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("Scenes/Menus/Menu");
     }
+
+    public void Level1()
+    {
+        SceneManager.LoadSceneAsync("Scenes/Levels/Level 1"); 
+    }
+
+    public void Level2()
+    {
+        SceneManager.LoadSceneAsync("Scenes/Levels/Level 2"); 
+    }
+
+    public void Level3()
+    {
+        SceneManager.LoadSceneAsync("Scenes/Levels/Level 3"); 
+    }
+
+    public void Level4()
+    {
+        SceneManager.LoadSceneAsync("Scenes/Levels/Level 4"); 
+    }
+
+    public void LevelsMenu()
+    {
+        SceneManager.LoadSceneAsync("Scenes/Levels/Menus/LevelsMenu"); 
+    }
     
 }
