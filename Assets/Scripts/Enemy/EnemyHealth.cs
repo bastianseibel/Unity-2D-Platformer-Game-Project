@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour, IPooledObject
 {
     [Header("Health Settings")]
     public int maxHealth = 50;
@@ -14,7 +15,21 @@ public class EnemyHealth : MonoBehaviour
     private EnemyAnimationController animationController;
     private Collider2D enemyCollider;
 
+    public void OnObjectSpawn()
+    {
+        currentHealth = maxHealth;
+        isDying = false;
+        if (enemyCollider != null) enemyCollider.enabled = true;
+        if (movementController != null) movementController.ResetEnemy();
+        gameObject.SetActive(true);
+    }
+
     private void Start()
+    {
+        InitializeComponents();
+    }
+
+    private void InitializeComponents()
     {
         currentHealth = maxHealth;
         movementController = GetComponent<EnemyMovementController>();
@@ -47,6 +62,17 @@ public class EnemyHealth : MonoBehaviour
         if (enemyCollider != null)
             enemyCollider.enabled = false;
 
-        Destroy(gameObject, 0.4f);
+        if (CoinSpawner.Instance != null)
+        {
+            CoinSpawner.Instance.SpawnRandomCoin(transform.position);
+        }
+
+        StartCoroutine(DeactivateAfterDelay(0.4f));
+    }
+
+    private IEnumerator DeactivateAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameObject.SetActive(false);
     }
 }

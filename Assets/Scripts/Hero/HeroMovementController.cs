@@ -14,7 +14,6 @@ public class HeroMovementController : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioSource jumpSound;
-    [SerializeField] private AudioSource ladderSound;
 
     [Header("Jump Physics")]
     [SerializeField] private float fallMultiplier = 2.5f;
@@ -168,7 +167,6 @@ public class HeroMovementController : MonoBehaviour
         
         if (state)
         {
-            ladderSound.Play();
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
         else
