@@ -450,8 +450,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2070997371}
-        m_TargetAssemblyTypeName: MainMenu1, Assembly-CSharp
-        m_MethodName: PlayGame
+        m_TargetAssemblyTypeName: UiNavigation, Assembly-CSharp
+        m_MethodName: LevelsMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -717,7 +717,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2070997371}
-        m_TargetAssemblyTypeName: MainMenu1, Assembly-CSharp
+        m_TargetAssemblyTypeName: UiNavigation, Assembly-CSharp
         m_MethodName: PlayGame
         m_Mode: 1
         m_Arguments:
@@ -887,7 +887,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2070997371}
-        m_TargetAssemblyTypeName: MainMenu1, Assembly-CSharp
+        m_TargetAssemblyTypeName: UiNavigation, Assembly-CSharp
         m_MethodName: OptionsGame
         m_Mode: 1
         m_Arguments:
@@ -1460,7 +1460,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2070997371}
-        m_TargetAssemblyTypeName: MainMenu1, Assembly-CSharp
+        m_TargetAssemblyTypeName: UiNavigation, Assembly-CSharp
         m_MethodName: QuitGame
         m_Mode: 1
         m_Arguments:
@@ -1647,7 +1647,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2070997367}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7b4bc4328b526844c8a7351710186a4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 87b65ad082706be4b940506cf76841f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2086384202
