@@ -14,7 +14,7 @@ public class HeartCollector : MonoBehaviour
             if (heroHealth != null)
             {
                 heroHealth.Heal(healthIncrease);
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             }
         }
     }
