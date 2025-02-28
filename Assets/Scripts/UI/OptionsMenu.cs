@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class HigScore : MonoBehaviour
+public class OptionsMenu : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI highscoreText;
 
@@ -28,10 +28,5 @@ public class HigScore : MonoBehaviour
 
     public void OnVolumeChange(float volume) {
         AudioListener.volume = volume;
-    }
-
-    public void MainMenu()
-    {
-        SceneManager.LoadSceneAsync("Scenes/Menus/Menu");
     }
 }

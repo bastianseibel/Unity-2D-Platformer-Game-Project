@@ -1,12 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu1 : MonoBehaviour
+public class UiNavigation : MonoBehaviour
 {
     public void PlayGame()
     {
         SceneManager.LoadSceneAsync("Scenes/Levels/Level 1"); 
     }
+
+    public void OptionsGame()
+    {
+        SceneManager.LoadSceneAsync("Scenes/Menus/MenuOptions");
+    }
+
     public void QuitGame()
     {
         #if UNITY_EDITOR
@@ -15,10 +23,10 @@ public class MainMenu1 : MonoBehaviour
             Application.Quit(); 
         #endif
     }
-    public void OptionsGame()
+
+    public void MainMenu()
     {
-        SceneManager.LoadSceneAsync("Scenes/Menus/MenuOptions");
+        SceneManager.LoadSceneAsync("Scenes/Menus/Menu");
     }
+    
 }
-
-
