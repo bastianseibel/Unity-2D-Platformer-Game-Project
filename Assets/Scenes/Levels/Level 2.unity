@@ -4354,25 +4354,25 @@ MonoBehaviour:
   pools:
   - tag: BronzeCoin
     prefab: {fileID: 3984810565120304442, guid: 58c55c013f7fbb648a202fe25a540060, type: 3}
-    size: 4
+    size: 17
   - tag: SilverCoin
     prefab: {fileID: 6615926012471611812, guid: 6c412e7c19aa8364dab3290c90df33f3, type: 3}
-    size: 14
+    size: 17
   - tag: GoldCoin
     prefab: {fileID: 1576508438481517781, guid: 1d96619ceb659a9469e4a0c8165c863b, type: 3}
-    size: 5
+    size: 15
   - tag: DiamondCoin
     prefab: {fileID: 6342155940045716663, guid: b6f0ef01cb160d9458f4ac5971986eaf, type: 3}
-    size: 6
+    size: 13
   - tag: Heart
     prefab: {fileID: 1925552132558999878, guid: fdcd2d1c68ee741428395bb8778c2f56, type: 3}
-    size: 2
+    size: 10
   - tag: BlueSlime
     prefab: {fileID: 5026691925487181945, guid: 44b8b5a9ed08f0540ba18e034995d50f, type: 3}
     size: 2
   - tag: BrownSlime
     prefab: {fileID: 6961462748605001596, guid: 5b913bc8a0ae4d441a3cd63a7f37de43, type: 3}
-    size: 2
+    size: 1
   - tag: GraySlime
     prefab: {fileID: 997182665751988724, guid: 79ecb461662daad459aadbb165f03742, type: 3}
     size: 2
